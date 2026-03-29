@@ -56,3 +56,24 @@
 - Separate concerns into 3 layers (Architecture, Navigation, Tools).
 - All changes must reflect in this document if rules, architecture, or schemas change.
 - `gemini.md` acts as the definitive law for code updates/adjustments.
+
+### 1.4 Module 2: Smart Test Case Request (`/api/generate_cases`)
+```json
+{
+  "llm_config": { ... },
+  "request_data": {
+    "module": "test_case",
+    "context_source": "jira|manual|testplan",
+    "ticket_id": "string (if JIRA)",
+    "manual_context": "string (if Manual)",
+    "testplan_context": "string (if Generated Test Plan is used)"
+  }
+}
+```
+
+### Module 2 Format Constraints
+Must strictly obey `ch_01_anti_hallucination.md`:
+1. Extract Verifiable Facts
+2. List Missing Information
+3. Generated Output (JIRA style tabular test cases)
+4. Self-Validation Check

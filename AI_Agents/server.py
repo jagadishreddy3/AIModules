@@ -62,6 +62,25 @@ def fetch_ticket():
 def generate_plan():
     return jsonify(run_tool('generate_plan.py', request.json))
 
+@app.route('/api/generate_cases', methods=['POST'])
+def generate_cases():
+    data = request.json
+    def generate():
+        import subprocess
+        tools_path = os.path.join(os.path.dirname(__file__), 'tools')
+        script = os.path.join(tools_path, 'generate_cases.py')
+        
+        process = subprocess.Popen(
+            [sys.executable, script, json.dumps(data)],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1
+        )
+        for line in iter(process.stdout.readline, ''):
+            yield line
+    return Response(generate(), mimetype='text/event-stream')
+
 if __name__ == '__main__':
     print("🚀 Starting B.L.A.S.T API Engine on http://0.0.0.0:5000")
     app.run(host='0.0.0.0', port=5000, debug=True)

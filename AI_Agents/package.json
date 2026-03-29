@@ -1,0 +1,15 @@
+{
+  "name": "gentools-node-backend",
+  "version": "1.0.0",
+  "description": "Node API fallback server for GenTools",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "undici": "^6.19.0"
+  }
+}

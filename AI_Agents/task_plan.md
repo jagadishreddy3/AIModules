@@ -15,3 +15,11 @@
 - [x] Build Generation Engine (`generate_plan.py`)
 - [x] Scaffold React Frontend (`frontend/src/App.jsx`)
 - [x] Build REST API Trigger (`server.py`)
+- [x] Migrate backend to Vercel native Edge functions
+
+## Module 2: Smart Test Case Creation
+- [x] Phase 1: Blueprint (Data Schema for test cases, Anti-Hallucination rules, UI states)
+- [x] Phase 2: Link (Connect existing providers, verify `xlsx` utility in frontend)
+- [x] Phase 3: Architect (Develop `api/generate_cases.js` obeying strict test case constraints)
+- [x] Phase 4: Stylize (Mount new "Smart Test Case Creation" sidebar tab, tabulate results)
+- [x] Phase 5: Trigger (Final implementation and deployment to Production branch)
