@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme {
+  /* JobFlow AI Premium Palette */
+  --color-jobflow-bg: #09090b;
+  --color-jobflow-sidebar: #0f0f12;
+  --color-jobflow-card: #18181b;
+  --color-jobflow-accent: #06b6d4;
+  --color-jobflow-border: #27272a;
+  --color-jobflow-text: #fafafa;
+  --color-jobflow-text-dim: #a1a1aa;
+
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap');
+  /* Fonts */
+  --font-outfit: "Outfit", sans-serif;
+}
+
+:root {
+  font-family: var(--font-outfit);
+}
+
+.dark {
+  --color-jobflow-bg: #09090b;
+  --color-jobflow-sidebar: #0f0f12;
+  --color-jobflow-card: #18181b;
+  --color-jobflow-accent: #06b6d4;
+  --color-jobflow-border: #27272a;
+  --color-jobflow-text: #fafafa;
+  --color-jobflow-text-dim: #a1a1aa;
+}
+
+/* Light mode overrides */
+html:not(.dark) {
+  --color-jobflow-bg: #f8fafc;
+  --color-jobflow-sidebar: #ffffff;
+  --color-jobflow-card: #ffffff;
+  --color-jobflow-accent: #0891b2;
+  --color-jobflow-border: #e2e8f0;
+  --color-jobflow-text: #0f172a;
+  --color-jobflow-text-dim: #64748b;
+}
+
+@layer base {
+  body {
+    @apply bg-jobflow-bg text-jobflow-text antialiased m-0;
+  }
+}
+
+@layer utilities {
+  .glassmorphism {
+    @apply bg-jobflow-card/70 backdrop-blur-[20px] border border-white/5;
+  }
+
+  .custom-scrollbar {
+    &::-webkit-scrollbar {
+      @apply w-1.5 h-1.5;
+    }
+    &::-webkit-scrollbar-track {
+      @apply bg-transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      @apply bg-jobflow-border rounded-full hover:bg-jobflow-accent;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Fix for overlapping RailNav icons */
+nav.w-20 {
+  @apply min-h-[100vh] flex flex-col items-center justify-start;
+}
+
+/* Fix for TopNav Tab alignment */
+header nav button {
+  @apply whitespace-nowrap;
+}

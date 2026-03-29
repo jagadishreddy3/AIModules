@@ -1,0 +1,131 @@
+"Test ID","Summary","Description","Precondition","Test Steps","Expected Result","Priority","Labels / Components","Test Type","PRD Source","Confidence","Status"
+"TC-001","Successful login with valid email and password","Verify a registered user can log in using valid email and password credentials.","User has a registered VWO account. Browser open at app.vwo.com.","1. Navigate to app.vwo.com
+2. Enter valid registered email
+3. Enter correct password
+4. Click login/submit button","User is authenticated and redirected to the personalized VWO dashboard.","Critical","Authentication","Functional","PRD §Functional Requirements – Login Process","Verified","To Do"
+"TC-002","Login fails with invalid password","Verify login is rejected when correct email is used with a wrong password.","User has a registered VWO account. Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Enter valid registered email
+3. Enter incorrect password
+4. Click login/submit button","Authentication fails. Clear actionable error message is displayed. User remains on login page.","Critical","Authentication, Error Handling","Negative","PRD §User Input Validation – Error Handling","Verified","To Do"
+"TC-003","Login fails with unregistered email address","Verify login is rejected when an email not associated with any account is entered.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Enter unregistered email
+3. Enter any password
+4. Click login/submit button","Authentication fails. Clear actionable error message is displayed.","High","Authentication, Error Handling","Negative","PRD §User Input Validation – Error Handling","Verified","To Do"
+"TC-004","Login blocked with empty email field","Verify form submission is blocked when the email field is empty.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Leave email field empty
+3. Enter any value in password
+4. Attempt to submit form","Form submission is blocked. Validation error displayed on email field.","High","Authentication, Validation","Negative","PRD §User Input Validation – Real-time Validation","Verified","To Do"
+"TC-005","Login blocked with empty password field","Verify form submission is blocked when the password field is empty.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Enter valid email
+3. Leave password field empty
+4. Attempt to submit form","Form submission is blocked. Validation error displayed on password field.","High","Authentication, Validation","Negative","PRD §User Input Validation – Real-time Validation","Verified","To Do"
+"TC-006","Email field validates format on blur","Verify real-time email format validation triggers when focus leaves the email field.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Click into email field
+3. Enter invalid format (e.g. userATdomain)
+4. Click outside email field (blur event)","Inline validation error indicating invalid email format is displayed immediately after blur.","High","Validation, UX","Functional","PRD §User Input Validation – Real-time Validation, Email Format Verification","Verified","To Do"
+"TC-007","Email field accepts valid email format","Verify a properly formatted email passes format validation.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Enter valid email (e.g. user@domain.com)
+3. Click outside the email field","No validation error displayed for the email field.","Medium","Validation","Functional","PRD §User Input Validation – Email Format Verification","Verified","To Do"
+"TC-008","Remember Me checkbox is present on login page","Verify a Remember Me checkbox exists on the login form.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Inspect login form for a Remember Me checkbox","A Remember Me checkbox is visible on the login form.","Medium","Authentication, UX","UI Verification","PRD §Existing Features – Remember Me Functionality","Verified","To Do"
+"TC-009","Remember Me persists session across browser restart","Verify checking Remember Me results in a persistent login session.","User has valid credentials. Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Enter valid credentials
+3. Check Remember Me checkbox
+4. Log in successfully
+5. Close and reopen the browser
+6. Navigate to app.vwo.com","User session is persisted; user is not required to log in again.","High","Authentication, Session Management","Functional","PRD §Remember Me Functionality; §Session Management","Verified","To Do"
+"TC-010","Forgot Password link is present on login page","Verify a Forgot Password link is accessible from the login page.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Inspect login page for a Forgot Password link","A Forgot Password link or button is visible on the login page.","High","Password Management","UI Verification","PRD §Password Management – Forgot Password Flow","Verified","To Do"
+"TC-011","Forgot Password flow accepts registered email","Verify submitting a registered email through Forgot Password initiates the reset process.","User has a registered VWO account. On Forgot Password page.","1. Click Forgot Password on login page
+2. Enter a registered email address
+3. Submit the form","System acknowledges the request with a confirmation message. Secure password reset email is triggered.","High","Password Management","Functional","PRD §Password Management – Forgot Password Flow, Password Recovery","Verified","To Do"
+"TC-012","Forgot Password flow with unregistered email","Verify system behavior when an unregistered email is submitted in Forgot Password.","On Forgot Password page.","1. Click Forgot Password on login page
+2. Enter an unregistered email address
+3. Submit form","System responds with a clear message. No account existence information is leaked.","Medium","Password Management, Security","Negative","PRD §Password Management – Forgot Password Flow; §Error Handling","Verified + Inference (low confidence: account non-disclosure not explicit in PRD)","To Do"
+"TC-013","Free trial signup CTA is present on login page","Verify a free trial registration call-to-action is accessible from the login page.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Inspect page for registration or free trial link","A clearly visible free trial / registration CTA is present on the login page.","Medium","Registration, UX","UI Verification","PRD §Existing Features – Account Registration Link","Verified","To Do"
+"TC-014","Login page is served over HTTPS","Verify login page enforces HTTPS / SSL-TLS encryption.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Inspect browser address bar and SSL certificate","URL begins with https://. Valid SSL/TLS certificate is present. No mixed-content warnings shown.","Critical","Security","Security","PRD §Security Specifications – HTTPS Enforcement","Verified","To Do"
+"TC-015","Rate limiting applied after repeated failed login attempts","Verify system applies rate limiting after multiple consecutive failed login attempts.","User account exists. Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Enter valid email with incorrect password
+3. Repeat 5-10 times rapidly in quick succession","System applies rate limiting or temporarily blocks further login attempts. Relevant error or warning message is displayed.","Critical","Security","Security","PRD §Security Specifications – Rate Limiting","Verified (exact lockout threshold not specified in PRD)","To Do"
+"TC-016","Password field masks input characters","Verify characters entered in the password field are masked by default.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Click into password field
+3. Type any characters","Entered characters are displayed as masked symbols (dots or asterisks).","High","Security, UX","Security","PRD §Security Specifications – Data Protection","Verified","To Do"
+"TC-017","Login page loads within 2 seconds on standard connection","Verify login page meets the defined sub-2-second load time performance target.","Standard internet connection. Browser cache cleared.","1. Open browser DevTools Network tab
+2. Navigate to app.vwo.com
+3. Record total page load time","Total page load time is under 2 seconds on a standard connection.","High","Performance","Performance","PRD §Performance Requirements – Page Load Speed","Verified","To Do"
+"TC-018","All form fields are keyboard navigable","Verify users can navigate all login form fields using keyboard only.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Do not use mouse
+3. Use Tab key to navigate through all elements
+4. Use Enter/Space to interact with buttons and checkboxes","All interactive elements are reachable and operable via keyboard alone.","High","Accessibility","Accessibility","PRD §Accessibility Features – Keyboard Navigation","Verified","To Do"
+"TC-019","Login form fields have ARIA labels for screen reader support","Verify form inputs include ARIA labels or associated label elements.","Browser at app.vwo.com. Accessibility audit tool available.","1. Navigate to app.vwo.com
+2. Run accessibility audit (axe or Lighthouse)
+3. Inspect ARIA attributes on email and password fields","Email and password fields have descriptive ARIA labels. No critical ARIA violations reported.","High","Accessibility","Accessibility","PRD §Accessibility Features – Screen Reader Support, ARIA labels","Verified","To Do"
+"TC-020","Auto-focus applied to first input field on page load","Verify keyboard focus is automatically placed on the first input field when the login page loads.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Observe which element has focus immediately after page load (without clicking)","Email input field has keyboard focus immediately on page load without any user interaction.","Medium","UX, Accessibility","Functional","PRD §Interface Design – Auto-focus","Verified","To Do"
+"TC-021","Login page is responsive on mobile viewport","Verify login form renders correctly on a mobile screen size.","Browser DevTools mobile emulation or physical mobile device.","1. Open app.vwo.com at 375px width (DevTools or physical mobile)
+2. Inspect layout, input fields, and buttons","All form elements are visible, usable, and not clipped or overflowing. Touch targets are adequately sized.","High","Responsive Design, UX","UI Verification","PRD §Interface Design – Responsive Design","Verified","To Do"
+"TC-022","Email input triggers email-optimized keyboard on mobile","Verify the email input field activates an email-optimized keyboard on mobile.","Physical mobile device or browser mobile emulation at app.vwo.com.","1. Open app.vwo.com on a mobile device
+2. Tap the email input field","Device displays an email-type keyboard (@ and .com keys prominent).","Medium","UX, Mobile","Functional","PRD §User Input Validation – Email Format Verification (specialized mobile keyboards)","Verified","To Do"
+"TC-023","Light and Dark Mode option present on login page","Verify login page presents a theme toggle or announcement for Light and Dark Mode.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Inspect page for theme toggle or Light/Dark Mode banner","A UI element or product announcement related to Light and Dark Mode is visible on the login page.","Low","Branding, UX","UI Verification","PRD §Existing Features – Product Announcements (Light and Dark Mode)","Verified","To Do"
+"TC-024","Loading state displayed during authentication processing","Verify user receives a loading state or indicator during authentication processing.","User has valid credentials. Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Enter valid credentials
+3. Submit login form
+4. Observe UI feedback during authentication","A loading state or progress indicator is shown during authentication. User is then redirected to the VWO dashboard.","Medium","UX, Authentication","Functional","PRD §Interface Design – Loading States; §Error Recovery Flow – Success Confirmation","Verified + Inference (low confidence: indicator type not specified in PRD)","To Do"
+"TC-025","SSO login option accessible for enterprise users","Verify an SSO login option is present for enterprise account users.","Enterprise SSO account configured. Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Look for SSO or enterprise login option
+3. Initiate SSO authentication flow","SSO login option is accessible. Initiating SSO redirects user to configured identity provider.","High","Authentication, SSO, Enterprise","Functional","PRD §Authentication System – SSO; §Third-Party Services – Enterprise SSO","Verified","To Do"
+"TC-026","Login page meets WCAG 2.1 AA color contrast requirements","Verify text and interactive elements meet minimum WCAG 2.1 AA contrast ratio of 4.5:1.","Browser at app.vwo.com. Color contrast analysis tool available.","1. Navigate to app.vwo.com
+2. Run WCAG color contrast check (Lighthouse / axe / Colour Contrast Analyser)
+3. Review results for all text and interactive elements","All text elements meet a minimum contrast ratio of 4.5:1 as required by WCAG 2.1 AA.","High","Accessibility, Compliance","Accessibility","PRD §Accessibility Standards – WCAG 2.1 AA Compliance","Verified","To Do"
+"TC-027","Email field has a visible label","Verify that the email input field has a visible, descriptive label on the login form.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Inspect the login form
+3. Identify the label associated with the email input field","A visible label is present and clearly identifies the email input field.","High","Labels, Accessibility, UX","UI Verification","PRD §Interface Design – Clickable Labels; §Accessibility – Screen Reader Support","Verified","To Do"
+"TC-028","Password field has a visible label","Verify that the password input field has a visible, descriptive label on the login form.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Inspect the login form
+3. Identify the label associated with the password input field","A visible label is present and clearly identifies the password input field.","High","Labels, Accessibility, UX","UI Verification","PRD §Interface Design – Clickable Labels; §Accessibility – Screen Reader Support","Verified","To Do"
+"TC-029","Clicking the email field label focuses the email input","Verify that clicking the email field label transfers focus to the email input (clickable label behaviour).","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Click directly on the email field label text (not the input box itself)","Keyboard focus moves to the email input field. Cursor is active in the email field.","High","Labels, Accessibility, UX","Functional","PRD §Interface Design – Clickable Labels","Verified","To Do"
+"TC-030","Clicking the password field label focuses the password input","Verify that clicking the password field label transfers focus to the password input.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Click directly on the password field label text (not the input box itself)","Keyboard focus moves to the password input field. Cursor is active in the password field.","High","Labels, Accessibility, UX","Functional","PRD §Interface Design – Clickable Labels","Verified","To Do"
+"TC-031","Form field labels are programmatically associated with their inputs","Verify that labels are correctly associated with their inputs via for/id or ARIA (not just visually co-located).","Browser at app.vwo.com. Browser DevTools or accessibility audit tool available.","1. Navigate to app.vwo.com
+2. Inspect HTML of email and password fields
+3. Verify <label for> matches input id, OR aria-labelledby / aria-label is set","Each input field has a programmatically associated label. Accessibility audit reports no missing label errors.","High","Labels, Accessibility","Accessibility","PRD §Accessibility Features – Clickable Labels, Screen Reader Support, ARIA labels","Verified","To Do"
+"TC-032","Error message is displayed inline near the relevant field","Verify that validation error messages appear inline adjacent to the field that caused the error.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Enter an invalid email format
+3. Attempt to submit or blur the field
+4. Observe location of error message","Error message is displayed inline, adjacent to the email field — not in a generic banner far from the field.","High","Error Handling, UX","Functional","PRD §User Input Validation – Error Handling (clear actionable error messages)","Verified","To Do"
+"TC-033","Error message text is clear and actionable","Verify error message copy tells the user what went wrong and how to fix it.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Enter invalid email format and submit
+3. Read the error message text","Error message text is descriptive and actionable (e.g. indicates the field is invalid and what is expected). Does not display a generic or cryptic code.","High","Error Handling, UX","Functional","PRD §User Input Validation – Error Handling (clear actionable error messages)","Verified","To Do"
+"TC-034","Error message clears when user corrects invalid email input","Verify inline error on email field is dismissed once the user enters a valid email.","Browser at app.vwo.com. Email validation error is currently displayed.","1. Trigger email validation error (invalid format + blur)
+2. Correct the email to a valid format
+3. Observe whether error message disappears","Error message is cleared / dismissed once a valid email format is entered.","Medium","Error Handling, UX","Functional","PRD §User Input Validation – Real-time Validation, Error Handling","Verified","To Do"
+"TC-035","Error message displayed on failed login is visible and readable","Verify that authentication failure error messages are visible, styled, and readable.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Enter valid email with wrong password
+3. Submit
+4. Inspect error message visibility (color, contrast, placement)","Error message is visible, has sufficient color contrast, and is not hidden or overlapped by other UI elements.","High","Error Handling, Accessibility","Functional","PRD §User Input Validation – Error Handling; §Accessibility – WCAG 2.1 AA","Verified","To Do"
+"TC-036","Multiple field errors shown simultaneously","Verify that errors for multiple empty or invalid fields are all shown at the same time on form submission.","Browser at app.vwo.com.","1. Navigate to app.vwo.com
+2. Leave both email and password fields empty
+3. Attempt to submit form","Validation errors for both the email field and password field are displayed simultaneously.","Medium","Error Handling, Validation","Functional","PRD §User Input Validation – Real-time Validation, Error Handling","Verified","To Do"
+"TC-037","Password strength indicator is displayed during password entry","Verify that a visual password strength indicator appears as the user types in the password field.","Browser at app.vwo.com on a page where password entry is applicable (e.g. registration or reset).","1. Navigate to the password entry page (registration or reset flow)
+2. Click into the password field
+3. Begin typing characters
+4. Observe UI for a strength indicator","A visual password strength indicator (e.g. weak / medium / strong bar or label) is displayed as the user types.","High","Password Policy, UX","Functional","PRD §User Input Validation – Password Strength Indicators","Verified","To Do"
+"TC-038","Password strength indicator updates dynamically as password changes","Verify the strength indicator reflects changes in real time as the user modifies the password.","Browser at app.vwo.com. Password entry page.","1. Navigate to the password entry page
+2. Type a short/simple password (e.g. 'abc')
+3. Observe strength indicator
+4. Extend password with numbers and symbols
+5. Observe indicator again","Password strength indicator updates dynamically — reflects lower strength for simple input and higher strength as complexity increases.","High","Password Policy, UX","Functional","PRD §User Input Validation – Password Strength Indicators","Verified","To Do"
+"TC-039","Password not meeting complexity requirements is rejected","Verify that a password not meeting enforced complexity requirements cannot be submitted.","Browser at app.vwo.com. Password creation page (registration or reset).","1. Navigate to password creation page
+2. Enter a password that does not meet complexity requirements (e.g. only lowercase letters)
+3. Attempt to submit","Form submission is blocked. An error message is displayed indicating the password does not meet the required complexity standards.","Critical","Password Policy, Validation","Negative","PRD §Authentication System – Password Requirements (enforced security standards for password complexity)","Verified","To Do"
+"TC-040","Password requirements are communicated to the user","Verify that password complexity requirements are displayed to the user before or during password entry.","Browser at app.vwo.com. Password creation page (registration or reset).","1. Navigate to password creation page
+2. Click into or interact with the password field
+3. Inspect UI for any displayed password requirements or hints","Password requirements (e.g. minimum length, required character types) are shown to the user as guidance text or tooltip.","High","Password Policy, UX","UI Verification","PRD §User Input Validation – Password Strength Indicators; §Password Requirements","Verified","To Do"
+"TC-041","Password strength indicator provides visual feedback distinguishing weak from strong passwords","Verify the visual feedback clearly differentiates between weak, medium, and strong passwords.","Browser at app.vwo.com. Password creation page.","1. Enter a weak password (e.g. single word, no numbers)
+2. Note strength indicator state
+3. Enter a strong password (mixed case, numbers, symbols)
+4. Note strength indicator state","Strength indicator clearly shows a different visual state (e.g. colour, label, or fill level) for a weak versus strong password.","Medium","Password Policy, UX","Functional","PRD §User Input Validation – Password Strength Indicators (visual feedback for password requirements and strength)","Verified","To Do"

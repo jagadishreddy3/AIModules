@@ -1,0 +1,15 @@
+/* Tailwind is injected via CDN in index.html */
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; /* prevents layout from scrolling outside the app container */
+}
+
+/* Custom scrollbars from the original HTML design */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+.light ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.dark ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
