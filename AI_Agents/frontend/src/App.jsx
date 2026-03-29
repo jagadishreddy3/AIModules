@@ -110,12 +110,45 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      const data = await res.json();
       
-      if (data.status === 'success') {
-         const outText = data.data.generated_plan_text;
-         setGeneratedOutput(outText);
-
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+         const data = await res.json();
+         if (data.status === 'success') {
+             setGeneratedOutput(data.data?.generated_plan_text || data.data);
+         } else {
+             setGeneratedOutput(`Generation Error: ${data.message}`);
+         }
+      } else {
+         // It's a stream!
+         const reader = res.body.getReader();
+         const decoder = new TextDecoder('utf-8');
+         let finalOutput = '';
+         
+         while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split('\n');
+            
+            for (let line of lines) {
+                line = line.trim();
+                if (line.startsWith('data: ')) {
+                    const dataStr = line.replace('data: ', '').trim();
+                    if (dataStr === '[DONE]') continue;
+                    try {
+                        const parsed = JSON.parse(dataStr);
+                        const token = parsed.choices?.[0]?.delta?.content || "";
+                        if (token) {
+                            finalOutput += token;
+                            setGeneratedOutput(finalOutput);
+                        }
+                    } catch (e) {}
+                }
+            }
+         }
+         
          // Format a clean Title for History
          let rawTitle = sourceMode === 'jira' && jiraKey ? `Jira Context: ${jiraKey}` : (inputText ? inputText : 'Blank Context');
          let cleanTitle = rawTitle.length > 25 ? rawTitle.substring(0, 25) + "..." : rawTitle;
@@ -128,11 +161,9 @@ export default function App() {
             jiraKey,
             inputText,
             ticketContext,
-            generatedOutput: outText
+            generatedOutput: finalOutput
          };
-         setHistory([newEntry, ...history]);
-      } else {
-         setGeneratedOutput(`Generation Error: ${data.message}`);
+         setHistory(prev => [newEntry, ...prev]);
       }
     } catch (e) {
       setGeneratedOutput("Network error while communicating with the backend API.");
