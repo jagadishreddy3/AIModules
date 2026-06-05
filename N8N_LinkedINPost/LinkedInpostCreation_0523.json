@@ -1,0 +1,360 @@
+{
+  "name": "LinkedInpostCreation",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -512,
+        16
+      ],
+      "id": "b1bb1d39-4968-4468-b1d6-78130dc63615",
+      "name": "When chat message received",
+      "webhookId": "479ebe22-f263-45d5-9edb-ceed12df1fa9"
+    },
+    {
+      "parameters": {
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Your task is to generate ONLY ONE topic about:\n\n\"Benefits of RAG and how easy and secure to use\"\n\nConstraints:\n\n- Choose the single most impactful and future-defining shift.\n- Avoid generic themes unless you provide a deeply unique angle.\n- The topic must be bold, specific, and insight-driven.\n- It should reflect a real structural change in the industry (not surface-level trends).\n- The topic must be strong enough to anchor a keynote talk.\n- \n-  You can talk about Playwright AI agents, Playwright MCP, Playwright CLI, AI agents, n8n, LangFlow, RAG, MCP, Crew.ai, LLM evaluation  \nOutput format:\n\n1. Title (clear, bold, thought-provoking)\n2. One-sentence thesis (strong and definitive)\n3. Why this topic matters in 2026 (5–7 bullet points with reasoning)\nDo NOT generate multiple topics.\nDo NOT provide alternatives.\nCommit to one topic and defend it.\n\nDon't`To make a complex topic, keep it very simple. "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -304,
+        16
+      ],
+      "id": "df51e5d3-e037-49cb-8ed4-d0f8d65ba137",
+      "name": "Topic Creator"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"topic\": \"Example\",\n\t\"rationale\": \"Example\",\n    \"hook\":\"Example\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -128,
+        224
+      ],
+      "id": "e5423df3-d9ed-4ceb-904e-9f4917535909",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        352
+      ],
+      "id": "9a8d2b41-582d-404a-a764-222a3ba70b54",
+      "name": "formatter",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "aneNqod2l8HEFt0Y",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        224
+      ],
+      "id": "b5f23276-94b1-41af-8f02-40ccca0d4e99",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "zqiA0PqNNE09t81y",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1hl0QVqIKbPfyZdXYFJ-8_qKyacKspZgchhTyBQBGc_Y",
+          "mode": "list",
+          "cachedResultName": "LinkedInpost",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hl0QVqIKbPfyZdXYFJ-8_qKyacKspZgchhTyBQBGc_Y/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hl0QVqIKbPfyZdXYFJ-8_qKyacKspZgchhTyBQBGc_Y/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Topic": "={{ $('Topic Creator').item.json.output.topic }}",
+            "Rationale": "={{ $('Topic Creator').item.json.output.rationale }}",
+            "Hook": "={{ $('Topic Creator').item.json.output.hook }}",
+            "Status": "Draft",
+            "Date": "={{ $today }}",
+            "Image Prompt": "={{ $json.output['image prompt'] }}",
+            "Content": "={{ $json.output.content }}"
+          },
+          "matchingColumns": [
+            "Topic"
+          ],
+          "schema": [
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Rationale",
+              "displayName": "Rationale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Hook",
+              "displayName": "Hook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Content",
+              "displayName": "Content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Image Prompt",
+              "displayName": "Image Prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        320,
+        0
+      ],
+      "id": "ac031e48-88b5-4d17-8458-f4d7c6504c87",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "zsVxDQcP84sOzu0A",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a high-performing LinkedIn content strategist and B2B copywriter.\n\nInput:\n\n- Title: {{ $json.output.topic }}\n- Rationale: {{ $json.output.rationale }}\n- Suggested Hook: {{ $json.output.hook }}\nYour task:\nCreate a high-engagement LinkedIn post based on the inputs.\n\nRequirements:\n\n1. Start with the provided hook (optimize it if necessary for stronger scroll-stopping impact).\n2. Expand the core idea clearly and persuasively.\n3. Maintain a strong narrative flow (problem → shift → insight → implication).\n4. Keep it practical and insight-driven (no fluff or generic motivation).\n5. Use short paragraphs for readability.\n6. Include 3–5 sharp bullet points if helpful.\n7. End with:\n    - A strong takeaway or forward-looking statement\n    - A conversation-driving question\n\nTone:\n\n- Authoritative but conversational\n- Insightful and slightly bold\n- Written for professionals in tech/QA/engineering leadership\nLength:\n\n- 150–300 words\nAfter the post, also provide:\n\nImage Suggestion:\n\n- Describe a visually striking, professional image concept\n- Include composition details (foreground, background, objects, mood)\n- Make it suitable for LinkedIn (clean, modern, minimal)\n- The image should reinforce the main message of the post\n\n\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "21eced08-ae1f-4d34-ae3d-87804d8cc9b0",
+      "name": "LinkedIn Content creator"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"content\": \"content of the linkedin created post\",\n\t\"image prompt\": \"Image that the AI should generate\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        272,
+        304
+      ],
+      "id": "b2ee10ee-4a78-4622-b6f1-4b6824c792dd",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        144,
+        224
+      ],
+      "id": "98f201fd-c30c-42d7-94c0-85ee4fd98c3b",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "zqiA0PqNNE09t81y",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Topic Creator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Topic Creator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "formatter": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Topic Creator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Topic Creator": {
+      "main": [
+        [
+          {
+            "node": "LinkedIn Content creator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn Content creator": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "LinkedIn Content creator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "LinkedIn Content creator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "91a0cc33-cf0e-4e2b-87ce-91650df9540a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "233c9d3a8c5f1b0dd7c2e5644a3bb6d873beec10c7c9fae4343a2507693b60e2"
+  },
+  "id": "0aayog2ZFgDPs9s1",
+  "tags": []
+}
