@@ -1,94 +1,111 @@
 import React from 'react';
-import { TrendingUp, Users, Target, Zap, ChevronRight, Sparkles } from 'lucide-react';
-import { COLUMNS, VIEWS } from '../../constants/columns';
+import { TrendingUp, ExternalLink } from 'lucide-react';
+import { VIEWS } from '../../constants/columns';
+
+const hiringCompanies = [
+  { name: 'Microsoft', role: 'SDET / QA Engineer', posted: 'Recent', link: 'https://www.linkedin.com/jobs/search/?keywords=Microsoft%20SDET&location=Hyderabad&sortBy=DD' },
+  { name: 'Amazon', role: 'QA Engineer / SDET', posted: 'Recent', link: 'https://www.linkedin.com/jobs/search/?keywords=Amazon%20SDET&location=Hyderabad&sortBy=DD' },
+  { name: 'Google', role: 'Test Engineer / SDET', posted: 'Recent', link: 'https://www.linkedin.com/jobs/search/?keywords=Google%20SDET&location=Hyderabad&sortBy=DD' },
+  { name: 'Salesforce', role: 'SDET / QE', posted: 'Recent', link: 'https://www.linkedin.com/jobs/search/?keywords=Salesforce%20SDET&location=Hyderabad&sortBy=DD' },
+  { name: 'ServiceNow', role: 'QE / SDET', posted: 'Recent', link: 'https://www.linkedin.com/jobs/search/?keywords=ServiceNow%20SDET&location=Hyderabad&sortBy=DD' },
+  { name: 'JPMorgan Chase', role: 'QA Automation Lead', posted: 'Recent', link: 'https://www.linkedin.com/jobs/search/?keywords=JPMorgan%20SDET&location=Hyderabad&sortBy=DD' },
+  { name: 'Oracle', role: 'QA / Test Engineer', posted: 'Recent', link: 'https://www.linkedin.com/jobs/search/?keywords=Oracle%20SDET&location=Hyderabad&sortBy=DD' },
+  { name: 'Qualcomm', role: 'Test / Automation Eng', posted: 'Recent', link: 'https://www.linkedin.com/jobs/search/?keywords=Qualcomm%20SDET&location=Hyderabad&sortBy=DD' },
+  { name: 'Uber', role: 'SDET', posted: 'Recent', link: 'https://www.linkedin.com/jobs/search/?keywords=Uber%20SDET&location=Hyderabad&sortBy=DD' },
+  { name: 'Apple', role: 'QA / SDET', posted: 'Recent', link: 'https://www.linkedin.com/jobs/search/?keywords=Apple%20SDET&location=Hyderabad&sortBy=DD' },
+  { name: 'Wells Fargo', role: 'QA Automation', posted: 'Recent', link: 'https://www.linkedin.com/jobs/search/?keywords=Wells%20Fargo%20SDET&location=Hyderabad&sortBy=DD' },
+  { name: 'Goldman Sachs', role: 'QA Engineer', posted: 'Recent', link: 'https://www.linkedin.com/jobs/search/?keywords=Goldman%20Sachs%20SDET&location=Hyderabad&sortBy=DD' },
+  { name: 'Cisco', role: 'Test / Automation Eng', posted: 'Recent', link: 'https://www.linkedin.com/jobs/search/?keywords=Cisco%20SDET&location=Hyderabad&sortBy=DD' },
+  { name: 'Indeed', role: 'SDET / QA', posted: 'Recent', link: 'https://www.linkedin.com/jobs/search/?keywords=Indeed%20SDET&location=Hyderabad&sortBy=DD' },
+  { name: 'Zscaler', role: 'QA / SDET', posted: 'Recent', link: 'https://www.linkedin.com/jobs/search/?keywords=Zscaler%20SDET&location=Hyderabad&sortBy=DD' },
+];
 
 const Sidebar = ({ jobs, currentView }) => {
-  const stats = COLUMNS.map(col => ({
-    ...col,
-    count: jobs.filter(j => j.status === col.id).length
-  }));
-
-  const companiesList = [...new Set(jobs.map(j => j.company))].slice(0, 6).map(name => ({
+  const pipelineCompanies = [...new Set(jobs.map(j => j.company))];
+  const companiesList = pipelineCompanies.slice(0, 6).map(name => ({
     name,
     count: jobs.filter(j => j.company === name).length
   }));
 
-  return (
-    <aside className="w-80 bg-jobflow-sidebar border-r border-jobflow-border flex flex-col h-full overflow-y-auto custom-scrollbar p-6 transition-all duration-300">
-      <div className="space-y-8 animate-fade-in">
-        {/* OVERVIEW SECTION */}
-        <div>
-          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-jobflow-text-dim mb-6 flex items-center justify-between">
-            <span>Overview</span>
-            <span className="text-jobflow-accent cursor-pointer hover:underline lowercase tracking-normal font-bold">View all</span>
-          </h3>
-          
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-jobflow-card p-4 rounded-2xl border border-jobflow-border hover:border-jobflow-accent/30 transition-all group">
-              <span className="text-3xl font-black block mb-1">{jobs.length}</span>
-              <span className="text-[9px] font-bold text-jobflow-text-dim uppercase tracking-widest block mb-2">Applied</span>
-              <div className="flex items-center gap-1 text-[10px] text-emerald-500 font-bold">
-                <TrendingUp size={10} /> <span>+3 this week</span>
-              </div>
-            </div>
-            <div className="bg-jobflow-card p-4 rounded-2xl border border-jobflow-border hover:border-jobflow-accent/30 transition-all">
-              <span className="text-3xl font-black block mb-1">{jobs.filter(j => j.status === 'interviews').length}</span>
-              <span className="text-[9px] font-bold text-jobflow-text-dim uppercase tracking-widest block mb-2">Interviews</span>
-              <div className="flex items-center gap-1 text-[10px] text-blue-500 font-bold">
-                <TrendingUp size={10} /> <span>+2 scheduled</span>
-              </div>
-            </div>
-            <div className="bg-jobflow-card p-4 rounded-2xl border border-jobflow-border hover:border-jobflow-accent/30 transition-all">
-              <span className="text-3xl font-black block mb-1">{jobs.filter(j => j.status === 'offer').length}</span>
-              <span className="text-[9px] font-bold text-jobflow-text-dim uppercase tracking-widest block mb-2">Offers</span>
-              <div className="flex items-center gap-1 text-[10px] text-emerald-500 font-bold">
-                <TrendingUp size={10} /> <span>+1 new</span>
-              </div>
-            </div>
-            <div className="bg-jobflow-card p-4 rounded-2xl border border-jobflow-border hover:border-jobflow-accent/30 transition-all">
-              <span className="text-3xl font-black block mb-1">91%</span>
-              <span className="text-[9px] font-bold text-jobflow-text-dim uppercase tracking-widest block mb-2">Avg Match</span>
-              <div className="flex items-center gap-1 text-[10px] text-blue-500 font-bold">
-                <TrendingUp size={10} /> <span>+4%</span>
-              </div>
-            </div>
+  const renderContent = () => {
+    switch(currentView) {
+      case VIEWS.INTERVIEWS:
+        return (
+          <div className="space-y-6">
+             <h3 className="text-xs font-black uppercase tracking-[0.2em] text-jobflow-text-dim mb-4">Preparation Checklist</h3>
+             {['Review Technical Specs', 'Behavioral Practice', 'Portfolio Walkthrough'].map((item, i) => (
+               <div key={i} className="bg-jobflow-card p-4 rounded-xl border border-jobflow-border flex items-center justify-between group cursor-pointer hover:border-jobflow-accent transition-all">
+                  <span className="text-xs font-bold text-jobflow-text">{item}</span>
+                  <div className="w-4 h-4 rounded border border-jobflow-border group-hover:border-jobflow-accent"></div>
+               </div>
+             ))}
           </div>
-        </div>
-
-        {/* COMPANIES LIST */}
-        <div>
-          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-jobflow-text-dim mb-4">Companies</h3>
-          <div className="space-y-1">
-            {companiesList.length > 0 ? companiesList.map((company, index) => (
-              <div key={index} className="flex items-center justify-between p-2 rounded-xl hover:bg-jobflow-card transition-all cursor-pointer group">
-                <div className="flex items-center gap-3">
-                  <div className={`w-2 h-2 rounded-full ${COLUMNS[index % COLUMNS.length].color}`}></div>
-                  <span className="text-xs font-bold text-jobflow-text group-hover:text-jobflow-accent transition-all">{company.name}</span>
+        );
+      default:
+        return (
+          <>
+            <div>
+              <h3 className="text-xs font-black uppercase tracking-[0.2em] text-jobflow-text-dim mb-6">Overview</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-jobflow-card p-4 rounded-2xl border border-jobflow-border">
+                  <span className="text-3xl font-black block mb-1">{jobs.length}</span>
+                  <span className="text-[11px] font-bold text-jobflow-text-dim uppercase tracking-widest block">Jobs</span>
                 </div>
-                <span className="text-[10px] font-bold text-jobflow-text-dim">{company.count}</span>
+                <div className="bg-jobflow-card p-4 rounded-2xl border border-jobflow-border">
+                  <span className="text-3xl font-black block mb-1">{jobs.filter(j => j.status === 'interviews').length}</span>
+                  <span className="text-[11px] font-bold text-jobflow-text-dim uppercase tracking-widest block">Interviews</span>
+                </div>
               </div>
-            )) : <p className="text-[10px] text-jobflow-text-dim italic px-2">No companies yet</p>}
-          </div>
-        </div>
-
-        {/* AI INSIGHTS */}
-        <div className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 border border-jobflow-accent/20 rounded-2xl p-5 relative overflow-hidden group hover:from-blue-600/30 hover:to-purple-600/30 transition-all">
-          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 translate-x-1 translate-y--1 transition-all">
-            <Sparkles size={64} />
-          </div>
-          <div className="flex items-center gap-2 mb-3">
-            <div className="p-1.5 bg-jobflow-accent rounded-lg text-white">
-              <Target size={14} />
             </div>
-            <span className="text-xs font-black text-white tracking-wide">AI Recommendation</span>
-          </div>
-          <p className="text-[11px] text-slate-300 leading-relaxed font-medium mb-4">
-            Analysis of <strong>Stripe</strong> role shows a strong profile match. Suggesting tailored resume adjustments.
-          </p>
-          <button className="w-full py-2 bg-jobflow-accent hover:bg-jobflow-accent/80 text-white rounded-xl text-[10px] font-black tracking-widest uppercase transition-all flex items-center justify-center gap-2 shadow-lg shadow-jobflow-accent/20">
-            View Analytics <ChevronRight size={12} />
-          </button>
-        </div>
+
+            {pipelineCompanies.length > 0 && (
+              <div>
+                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-jobflow-text-dim mb-3 flex items-center gap-2">
+                  <TrendingUp size={12} className="text-jobflow-accent" /> Your Pipeline
+                </h3>
+                <div className="space-y-1">
+                  {companiesList.map((company, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 rounded-xl bg-jobflow-card border border-jobflow-border/50">
+                      <span className="text-xs font-bold text-jobflow-text">{company.name}</span>
+                      <span className="text-xs font-bold text-jobflow-text-dim">{company.count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div>
+              <h3 className="text-xs font-black uppercase tracking-[0.2em] text-jobflow-text-dim mb-3 flex items-center gap-2">
+                <ExternalLink size={12} className="text-jobflow-accent" /> Top Companies Hiring Now
+              </h3>
+              <div className="space-y-0.5 max-h-72 overflow-y-auto custom-scrollbar">
+                {hiringCompanies.map((company) => (
+                  <a
+                    key={company.name}
+                    href={company.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-2 rounded-xl hover:bg-jobflow-card transition-all cursor-pointer group"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[11px] font-semibold text-jobflow-text group-hover:text-jobflow-accent transition-all">{company.name}</span>
+                      <span className="text-[10px] font-medium text-jobflow-text-dim ml-1.5">{company.role}</span>
+                    </div>
+                    <span className="text-[9px] font-semibold text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-md shrink-0 ml-1">{company.posted}</span>
+                    <ExternalLink size={10} className="text-jobflow-text-dim group-hover:text-jobflow-accent transition-all opacity-0 group-hover:opacity-100 shrink-0 ml-1" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </>
+        );
+    }
+  };
+
+  return (
+    <aside className="w-64 bg-jobflow-sidebar border-r border-jobflow-border flex flex-col h-full overflow-y-auto custom-scrollbar p-4 shrink-0 transition-all duration-300">
+      <div className="space-y-8 animate-fade-in">
+        {renderContent()}
       </div>
     </aside>
   );

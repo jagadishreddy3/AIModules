@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ExternalLink, Edit2, Trash2, MapPin, Tag, Banknote, Clock, Plus } from 'lucide-react';
-import { getDaysSince } from '../utils/date';
-import { COLUMNS } from '../constants/columns';
+import { ExternalLink, Edit2, Trash2, MapPin, Clock, Sparkles } from 'lucide-react';
+import { getDaysSince } from '../../utils/date';
+import { COLUMNS } from '../../constants/columns';
 
 const JobCard = ({ job, onEdit, onDelete }) => {
   const {
@@ -29,79 +29,63 @@ const JobCard = ({ job, onEdit, onDelete }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative bg-jobflow-card rounded-[24px] border border-jobflow-border p-5 mb-4 cursor-grab active:cursor-grabbing hover:border-jobflow-accent/40 hover:shadow-xl hover:shadow-jobflow-accent/5 transition-all duration-300 animate-fade-in`}
+      className={`group relative bg-jobflow-card rounded-2xl border border-jobflow-border p-3.5 mb-3 cursor-grab active:cursor-grabbing hover:border-jobflow-accent/40 hover:shadow-lg hover:shadow-jobflow-accent/5 transition-all duration-300 animate-fade-in`}
       {...attributes}
       {...listeners}
     >
-      {/* Accent strip */}
-      <div className={`absolute left-0 top-1/4 bottom-1/4 w-1 ${column?.color} rounded-r-full opacity-0 group-hover:opacity-100 transition-all`}></div>
-
-      <div className="flex justify-between items-start gap-4 mb-4">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-black text-jobflow-text-dim uppercase tracking-widest truncate max-w-[120px]">
+      <div className="flex justify-between items-start gap-3 mb-3 min-w-0">
+        <div className="flex-1 min-w-0 overflow-hidden">
+          <div className="flex items-center gap-1.5 mb-0.5 min-w-0">
+            <span className="text-[11px] font-semibold text-jobflow-text-dim uppercase tracking-wider truncate shrink-0">
               {job.company}
             </span>
-            <span className="text-jobflow-text-dim opacity-50">•</span>
-            <span className="text-[10px] font-bold text-jobflow-text-dim flex items-center gap-1">
-              <MapPin size={10} /> {job.location || 'Remote'}
+            <span className="text-jobflow-text-dim opacity-50 shrink-0">•</span>
+            <span className="text-[11px] font-medium text-jobflow-text-dim flex items-center gap-1 truncate">
+              <MapPin size={9} className="shrink-0" /> {job.location || 'Remote'}
             </span>
           </div>
-          <h3 className="font-black text-jobflow-text text-sm leading-tight group-hover:text-jobflow-accent transition-colors truncate" title={job.role}>
+          <h3 className="font-semibold text-jobflow-text text-xs leading-tight group-hover:text-jobflow-accent transition-colors truncate" title={job.role}>
             {job.role}
           </h3>
         </div>
         
-        <div className="flex items-center gap-1 shrink-0 bg-jobflow-bg/50 p-1 rounded-xl border border-jobflow-border">
-          {job.linkedinUrl && (
-            <a
-              href={job.linkedinUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="p-1.5 text-jobflow-text-dim hover:text-jobflow-accent rounded-lg transition-all"
-            >
-              <ExternalLink size={14} />
-            </a>
-          )}
+        <div className="flex items-center gap-0.5 shrink-0 bg-jobflow-bg/50 p-0.5 rounded-lg border border-jobflow-border">
           <button
             onClick={(e) => { e.stopPropagation(); onEdit(job); }}
-            className="p-1.5 text-jobflow-text-dim hover:text-jobflow-accent rounded-lg transition-all"
+            className="p-1 text-jobflow-text-dim hover:text-jobflow-accent rounded-md transition-all"
           >
-            <Edit2 size={14} />
+            <Edit2 size={12} />
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); onDelete(job.id); }}
-            className="p-1.5 text-jobflow-text-dim hover:text-rose-500 rounded-lg transition-all"
+            className="p-1 text-jobflow-text-dim hover:text-rose-500 rounded-md transition-all"
           >
-            <Trash2 size={14} />
+            <Trash2 size={12} />
           </button>
         </div>
       </div>
 
-      {/* Tags Section */}
-      <div className="flex flex-wrap gap-1.5 mb-5">
-        {(job.tags || ['AI/ML', 'React']).map((tag, i) => (
-          <span key={i} className="px-2 py-0.5 bg-jobflow-bg border border-jobflow-border text-[9px] font-black text-jobflow-text-dim rounded-md uppercase tracking-wider group-hover:border-jobflow-accent/30 transition-all">
+      <div className="flex flex-wrap gap-1 mb-3">
+        {(job.tags || ['AI/ML', 'React']).slice(0, 3).map((tag, i) => (
+          <span key={i} className="px-1.5 py-0.5 bg-jobflow-bg border border-jobflow-border text-[10px] font-semibold text-jobflow-text-dim rounded-md uppercase tracking-wider">
             {tag}
           </span>
         ))}
       </div>
 
-      <div className="flex items-center justify-between border-t border-jobflow-border/50 pt-4 mt-auto">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-[10px] font-bold text-jobflow-text-dim">
-            <Clock size={12} className="text-jobflow-accent/60" />
+      <div className="flex items-center justify-between border-t border-jobflow-border/50 pt-3 mt-auto">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 text-[11px] font-medium text-jobflow-text-dim">
+            <Clock size={10} className="text-jobflow-accent/60" />
             <span>{daysSince === 0 ? 'Today' : `${daysSince}d ago`}</span>
           </div>
-          {job.salary && (
-            <div className="flex items-center gap-1.5 text-[10px] font-black text-emerald-500">
-               <span>{job.salary}</span>
-            </div>
-          )}
-        </div>
-        <div className="w-6 h-6 bg-jobflow-accent/10 rounded-lg flex items-center justify-center text-jobflow-accent hover:bg-jobflow-accent hover:text-white transition-all cursor-pointer">
-           <Plus size={14} />
+          <button 
+            title="AI-powered resume tailoring for this role — customizes your resume to match job requirements"
+            className="flex items-center gap-1 px-1.5 py-0.5 bg-jobflow-accent/10 border border-jobflow-accent/20 rounded-md text-jobflow-accent text-[10px] font-semibold uppercase tracking-wider hover:bg-jobflow-accent hover:text-white transition-all shadow-sm"
+            onClick={(e) => { e.stopPropagation(); }}
+          >
+            <Sparkles size={9} /> Tailor
+          </button>
         </div>
       </div>
     </div>

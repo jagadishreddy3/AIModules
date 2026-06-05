@@ -1,76 +1,103 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary-wishlist: #8b5cf6;
-  --color-primary-applied: #3b82f6;
-  --color-primary-followup: #f59e0b;
-  --color-primary-interview: #06b6d4;
-  --color-primary-offer: #10b981;
-  --color-primary-rejected: #ef4444;
+  --color-jobflow-bg: #09090b;
+  --color-jobflow-sidebar: #0f0f12;
+  --color-jobflow-card: #18181b;
+  --color-jobflow-accent: #06b6d4;
+  --color-jobflow-border: #27272a;
+  --color-jobflow-text: #fafafa;
+  --color-jobflow-text-dim: #a1a1aa;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  
-  color-scheme: light dark;
-  background-color: #f8fafc;
-  color: #1e293b;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-sans);
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+.dark {
+  --color-jobflow-bg: #09090b;
+  --color-jobflow-sidebar: #0f0f12;
+  --color-jobflow-card: #18181b;
+  --color-jobflow-accent: #06b6d4;
+  --color-jobflow-border: #27272a;
+  --color-jobflow-text: #fafafa;
+  --color-jobflow-text-dim: #a1a1aa;
 }
 
-#root {
-  width: 100%;
-  height: 100%;
+html:not(.dark) {
+  --color-jobflow-bg: #f1f5f9;
+  --color-jobflow-sidebar: #ffffff;
+  --color-jobflow-card: #ffffff;
+  --color-jobflow-accent: #0e7490;
+  --color-jobflow-border: #cbd5e1;
+  --color-jobflow-text: #0f172a;
+  --color-jobflow-text-dim: #475569;
 }
 
-/* Ensure dark mode applies to the root and components */
-.dark body {
-  background-color: #020617;
-  color: #f8fafc;
+@layer base {
+  body {
+    @apply bg-jobflow-bg text-jobflow-text antialiased m-0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+  }
 }
 
-/* Custom scrollbars for columns */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+@layer utilities {
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  .glassmorphism {
+    @apply bg-jobflow-card/70 backdrop-blur-[20px] border border-white/5;
+  }
+
+  .custom-scrollbar {
+    &::-webkit-scrollbar {
+      @apply w-1.5 h-1.5;
+    }
+    &::-webkit-scrollbar-track {
+      @apply bg-transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      @apply bg-jobflow-border rounded-full hover:bg-jobflow-accent;
+    }
+  }
+
+  .kanban-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.jobflow-accent') theme('colors.jobflow-bg');
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    &::-webkit-scrollbar-track {
+      @apply bg-jobflow-bg rounded-full;
+    }
+    &::-webkit-scrollbar-thumb {
+      @apply bg-jobflow-accent/50 rounded-full hover:bg-jobflow-accent;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
-}
-
-.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #1e293b;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #334155;
-}
-
-/* Ensure images and icons are themed */
-.dark img {
-  filter: brightness(0.8) contrast(1.2);
+/* Fix for TopNav Tab alignment */
+header nav button {
+  @apply whitespace-nowrap;
 }

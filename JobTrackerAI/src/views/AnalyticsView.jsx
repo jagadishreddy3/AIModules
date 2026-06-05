@@ -1,100 +1,105 @@
 import React from 'react';
-import { BarChart3, PieChart, Target, Zap, ArrowUpRight, ArrowDownRight } from 'lucide-react';
-import { COLUMNS } from '../constants/columns';
+import { BarChart, PieChart, Activity, TrendingUp, Target, Briefcase, ChevronRight } from 'lucide-react';
 
 const AnalyticsView = ({ jobs }) => {
-  const stats = COLUMNS.map(col => ({
-    ...col,
-    count: jobs.filter(j => j.status === col.id).length,
-    percentage: jobs.length > 0 ? (jobs.filter(j => j.status === col.id).length / jobs.length) * 100 : 0
-  }));
+  const statusCounts = jobs.reduce((acc, job) => {
+    acc[job.status] = (acc[job.status] || 0) + 1;
+    return acc;
+  }, {});
 
-  const interviewRate = (jobs.filter(j => ['interviews', 'offer'].includes(j.status)).length / jobs.length * 100) || 0;
-  const offerSuccess = (jobs.filter(j => j.status === 'offer').length / jobs.length * 100) || 0;
+  const total = jobs.length;
+  const appliedCount = jobs.filter(j => j.status !== 'wishlist').length;
+  const successApps = jobs.filter(j => ['screening', 'interviews', 'offer'].includes(j.status)).length;
+  const appSuccess = appliedCount > 0 ? Math.round((successApps / appliedCount) * 100) : 0;
+  const interviewCount = jobs.filter(j => j.status === 'interviews' || j.status === 'offer').length;
+  const offerCount = statusCounts.offer || 0;
+  const interviewPass = interviewCount > 0 ? Math.round((offerCount / interviewCount) * 100) : 0;
+  const stageMap = { wishlist: 0, applied: 1, screening: 2, interviews: 3, offer: 4, closed: 0 };
+  const avgRounds = total > 0 ? (jobs.reduce((sum, j) => sum + (stageMap[j.status] || 0), 0) / total).toFixed(1) : '0.0';
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const monthlyApps = jobs.filter(j => new Date(j.dateApplied) >= thirtyDaysAgo).length;
+
+  const stats = [
+    { label: 'Wishlist', count: statusCounts.wishlist || 0, color: 'bg-purple-500' },
+    { label: 'Applied', count: statusCounts.applied || 0, color: 'bg-blue-500' },
+    { label: 'Screening', count: statusCounts.screening || 0, color: 'bg-amber-500' },
+    { label: 'Interviews', count: statusCounts.interviews || 0, color: 'bg-cyan-500' },
+    { label: 'Offer', count: statusCounts.offer || 0, color: 'bg-emerald-500' },
+  ];
+
+  const maxCount = Math.max(...stats.map(s => s.count), 1);
 
   return (
-    <div className="p-10 animate-fade-in h-full overflow-y-auto custom-scrollbar">
-      <div className="mb-12 flex justify-between items-end">
-        <div>
-          <h2 className="text-3xl font-black text-jobflow-text mb-2 tracking-tight">Analytics Deep-Dive</h2>
-          <p className="text-sm text-jobflow-text-dim font-medium tracking-wide">Data-driven performance tracking of your job hunt.</p>
-        </div>
-        <div className="flex gap-4">
-           <div className="bg-jobflow-card px-4 py-3 rounded-2xl border border-jobflow-border flex items-center gap-3">
-              <div className="p-2 bg-emerald-500/10 text-emerald-500 rounded-lg"><TrendingUp size={16}/></div>
-              <div>
-                <p className="text-[9px] font-bold text-jobflow-text-dim uppercase tracking-wider">Success Rate</p>
-                <p className="text-sm font-black text-emerald-500">+12% vs last mo</p>
-              </div>
-           </div>
-        </div>
+    <div className="flex flex-col h-full bg-jobflow-bg/30 animate-fade-in overflow-hidden">
+      <div className="px-5 py-3 border-b border-jobflow-border/50 shrink-0 bg-jobflow-bg/80 backdrop-blur-sm z-10">
+        <h2 className="text-xl font-bold text-jobflow-text tracking-tight">Performance Analytics</h2>
+        <p className="text-[11px] font-semibold text-jobflow-text-dim uppercase tracking-[0.15em] mt-1 border border-jobflow-border px-2 py-0.5 rounded-md inline-block">
+          Pipeline Evolution
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-        {/* Status Distribution */}
-        <div className="bg-jobflow-card border border-jobflow-border p-8 rounded-[40px] relative overflow-hidden">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-lg font-black text-jobflow-text flex items-center gap-3">
-              <PieChart size={24} className="text-jobflow-accent" /> Pipeline Distribution
-            </h3>
-            <span className="text-[10px] font-black text-jobflow-text-dim uppercase tracking-widest bg-jobflow-bg px-3 py-1.5 rounded-xl border border-jobflow-border">Real-time</span>
+      <div className="p-5 space-y-4 overflow-hidden flex-1">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-0">
+           <div className="bg-jobflow-card border border-jobflow-border rounded-2xl p-5 flex flex-col">
+             <div className="flex items-center justify-between mb-4 shrink-0">
+               <div>
+                  <h3 className="font-bold text-jobflow-text text-base mb-0.5">Pipeline Distribution</h3>
+                  <p className="text-[11px] font-medium text-jobflow-text-dim uppercase tracking-wider">Real-time Stage Analysis</p>
+               </div>
+               <BarChart className="text-jobflow-accent" size={20} />
+            </div>
+            
+            <div className="space-y-3 flex-1">
+              {stats.map(stat => (
+                <div key={stat.label} className="space-y-1.5 group">
+                   <div className="flex justify-between items-end">
+                      <span className="text-[11px] font-semibold text-jobflow-text uppercase tracking-[0.1em] group-hover:text-jobflow-accent transition-all">{stat.label}</span>
+                      <span className="text-xs font-semibold text-jobflow-text">{stat.count} <span className="text-[10px] text-jobflow-text-dim font-medium ml-0.5">({Math.round(stat.count/jobs.length*100 || 0)}%)</span></span>
+                   </div>
+                   <div className="h-2 bg-jobflow-bg rounded-full overflow-hidden border border-jobflow-border/50">
+                      <div 
+                        className={`h-full ${stat.color} rounded-full shadow-sm transition-all duration-700 ease-out`} 
+                        style={{ width: `${(stat.count / maxCount) * 100}%` }}
+                      ></div>
+                   </div>
+                </div>
+              ))}
+            </div>
           </div>
-          
-          <div className="space-y-5">
-            {stats.map((stat) => (
-              <div key={stat.id} className="space-y-2">
-                <div className="flex justify-between items-end">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-2.5 h-2.5 rounded-full ${stat.color} shadow-lg shadow-current/20`}></div>
-                    <span className="text-xs font-black text-jobflow-text tracking-tight">{stat.label}</span>
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-sm font-black text-jobflow-text">{stat.count}</span>
-                    <span className="text-[10px] font-bold text-jobflow-text-dim uppercase">{stat.percentage.toFixed(0)}%</span>
-                  </div>
-                </div>
-                <div className="w-full h-2.5 bg-jobflow-bg rounded-full overflow-hidden border border-jobflow-border p-0.5">
-                  <div 
-                    className={`h-full ${stat.color} rounded-full transition-all duration-1000 ease-out`}
-                    style={{ width: `${stat.percentage}%` }}
-                  ></div>
-                </div>
-              </div>
-            ))}
+
+          <div className="grid grid-cols-2 gap-3 content-start">
+             <MetricBox title="App Success" value={`${appSuccess}%`} sub="To Screen" icon={Activity} />
+             <MetricBox title="Interview Pass" value={`${interviewPass}%`} sub="To Offer" icon={Target} color="text-emerald-500" />
+             <MetricBox title="Avg Rounds" value={avgRounds} sub="Per App" icon={TrendingUp} color="text-purple-500" />
+             <MetricBox title="Monthly" value={`+${monthlyApps}`} sub="New Apps" icon={Briefcase} color="text-blue-500" />
           </div>
         </div>
 
-        {/* Success Metrics */}
-        <div className="space-y-8">
-           <div className="bg-jobflow-card border border-jobflow-border p-8 rounded-[40px] flex items-center justify-between group hover:border-jobflow-accent/30 transition-all">
-              <div className="space-y-2">
-                <span className="text-[10px] font-black text-jobflow-text-dim uppercase tracking-[0.2em] block">Interview Conversion</span>
-                <span className="text-5xl font-black text-jobflow-text tracking-tighter">{interviewRate.toFixed(0)}%</span>
-                <p className="text-[11px] text-emerald-500 font-bold flex items-center gap-1">
-                   <TrendingUp size={12} /> Positive growth this month
-                </p>
-              </div>
-              <div className="w-24 h-24 bg-jobflow-accent/10 rounded-full flex items-center justify-center border-4 border-jobflow-accent shadow-xl shadow-jobflow-accent/10">
-                 <Target size={40} className="text-jobflow-accent" />
-              </div>
-           </div>
-
-           <div className="bg-jobflow-card border border-jobflow-border p-8 rounded-[40px] flex items-center justify-between group hover:border-emerald-500/30 transition-all">
-              <div className="space-y-2">
-                <span className="text-[10px] font-black text-jobflow-text-dim uppercase tracking-[0.2em] block">Offer Success Rate</span>
-                <span className="text-5xl font-black text-jobflow-text tracking-tighter">{offerSuccess.toFixed(0)}%</span>
-                <p className="text-[11px] text-jobflow-text-dim font-bold flex items-center gap-1 italic">
-                   Based on {jobs.length} total apps
-                </p>
-              </div>
-              <div className="w-24 h-24 bg-emerald-500/10 rounded-full flex items-center justify-center border-4 border-emerald-500 shadow-xl shadow-emerald-500/10">
-                 <Zap size={40} className="text-emerald-500" />
-              </div>
-           </div>
+        <div className="bg-gradient-to-br from-jobflow-card to-jobflow-bg border border-jobflow-border rounded-2xl p-5 text-center relative overflow-hidden group shrink-0">
+           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-0.5 bg-gradient-to-r from-transparent via-jobflow-accent to-transparent opacity-20 group-hover:opacity-100 transition-all"></div>
+           <h3 className="text-base font-bold text-jobflow-text mb-1">Unlock Predictive Analytics</h3>
+           <p className="text-[11px] text-jobflow-text-dim max-w-lg mx-auto mb-4 leading-relaxed font-medium">
+             Our AI engine can predict which companies are most likely to respond based on your historical success patterns and live market data.
+           </p>
+           <button className="px-6 py-2.5 bg-jobflow-accent text-white font-semibold text-[11px] uppercase tracking-[0.15em] rounded-xl shadow-lg shadow-jobflow-accent/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 mx-auto">
+             Get AI Insights <ChevronRight size={14}/>
+           </button>
         </div>
       </div>
     </div>
   );
 };
+
+const MetricBox = ({ title, value, sub, icon: Icon, color="text-jobflow-accent" }) => (
+  <div className="bg-jobflow-card border border-jobflow-border p-4 rounded-2xl hover:border-jobflow-accent/30 transition-all group">
+     <div className={`p-2 bg-jobflow-bg border border-jobflow-border rounded-lg w-fit mb-3 ${color} group-hover:scale-110 transition-all`}>
+        <Icon size={16} />
+     </div>
+     <h4 className={`text-xl font-bold ${color} mb-0.5`}>{value}</h4>
+     <p className="text-[10px] font-semibold text-jobflow-text uppercase tracking-wider">{title}</p>
+     <p className="text-[10px] font-medium text-jobflow-text-dim uppercase tracking-wider mt-0.5">{sub}</p>
+  </div>
+);
 
 export default AnalyticsView;

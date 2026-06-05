@@ -1,70 +1,73 @@
 import React from 'react';
-import { FileText, Plus, Search, MoreVertical, ExternalLink, Calendar, Copy } from 'lucide-react';
+import { FileText, Plus, Search, ChevronRight, Clock, Clock3, Tag, Download } from 'lucide-react';
 
-const ResumesView = ({ resumes, onAdd, onEdit, onDelete }) => {
+const ResumesView = ({ resumes, onAdd }) => {
   return (
-    <div className="p-10 animate-fade-in h-full overflow-y-auto custom-scrollbar">
-      <div className="flex justify-between items-end mb-10">
+    <div className="flex flex-col h-full bg-jobflow-bg/30 animate-fade-in overflow-hidden">
+      <div className="px-5 py-3 border-b border-jobflow-border/50 shrink-0 bg-jobflow-bg/80 backdrop-blur-sm z-10 flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-black text-jobflow-text mb-2">Resume Assets</h2>
-          <p className="text-sm text-jobflow-text-dim font-medium tracking-wide italic">Manage your tailored resumes and variations.</p>
+          <h2 className="text-xl font-bold text-jobflow-text tracking-tight">Resume Palace</h2>
+          <p className="text-[11px] font-semibold text-jobflow-text-dim uppercase tracking-[0.15em] mt-1 border border-jobflow-border px-2 py-0.5 rounded-md inline-block">
+            {resumes.length} Asset Variations
+          </p>
         </div>
         <button 
           onClick={onAdd}
-          className="flex items-center gap-2 bg-jobflow-accent hover:bg-jobflow-accent/80 text-white px-6 py-3 rounded-2xl font-black text-sm transition-all shadow-lg shadow-jobflow-accent/20 active:scale-95"
+          className="bg-jobflow-accent hover:bg-jobflow-accent/80 text-white px-4 py-2 rounded-lg font-semibold text-[11px] uppercase tracking-[0.15em] transition-all shadow-lg shadow-jobflow-accent/20 active:scale-95 flex items-center gap-1.5"
         >
-          <Plus size={18} /> Add Variation
+          <Plus size={14} /> New Variation
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {resumes.length > 0 ? resumes.map((resume) => (
-          <div key={resume.id} className="bg-jobflow-card border border-jobflow-border rounded-3xl p-6 hover:border-jobflow-accent/30 transition-all group overflow-hidden relative">
-            <div className="flex justify-between items-start mb-6">
-              <div className="p-3 bg-jobflow-accent/10 rounded-2xl text-jobflow-accent">
-                <FileText size={24} />
-              </div>
-              <button className="text-jobflow-text-dim hover:text-jobflow-text p-1 transition-colors">
-                <MoreVertical size={18} />
-              </button>
-            </div>
+      <div className="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-hidden flex-1">
+        {resumes.length > 0 ? resumes.map(resume => (
+          <div key={resume.id} className="bg-jobflow-card border border-jobflow-border p-5 rounded-2xl hover:border-jobflow-accent/50 transition-all group relative cursor-pointer overflow-hidden">
+             <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                <Download size={18} className="text-jobflow-accent" />
+             </div>
 
-            <h3 className="text-lg font-black text-jobflow-text group-hover:text-jobflow-accent transition-all mb-2 truncate">
-              {resume.name}
-            </h3>
-            
-            <div className="flex items-center gap-4 mb-6">
-              <div className="flex items-center gap-1.5 text-[10px] font-bold text-jobflow-text-dim uppercase tracking-wider">
-                <Calendar size={12} />
-                <span>{new Date(resume.lastModified).toLocaleDateString()}</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-500 uppercase tracking-wider">
-                <Copy size={12} />
-                <span>8 Uses</span>
-              </div>
-            </div>
+             <div className="w-11 h-11 bg-jobflow-bg border border-jobflow-border rounded-xl flex items-center justify-center text-jobflow-accent mb-4 group-hover:bg-jobflow-accent group-hover:text-white transition-all">
+                <FileText size={20} />
+             </div>
+              
+             <h3 className="font-bold text-base text-jobflow-text mb-1.5 leading-tight group-hover:text-jobflow-accent transition-all">
+                {resume.name}
+             </h3>
+             <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center gap-1 text-[11px] font-medium text-jobflow-text-dim">
+                   <Clock3 size={10} /> Last used: Jan 24, 2026
+                </div>
+                <div className="w-1 h-1 bg-jobflow-border rounded-full"></div>
+                <div className="text-[10px] font-semibold text-emerald-500 uppercase tracking-wider bg-emerald-500/10 px-1.5 py-0.5 rounded-md">86% Success</div>
+             </div>
 
-            <div className="flex gap-3">
-              <button className="flex-1 py-2.5 bg-jobflow-sidebar border border-jobflow-border text-jobflow-text text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-jobflow-border transition-all flex items-center justify-center gap-2">
-                <ExternalLink size={12} /> Preview
-              </button>
-              <button className="flex-1 py-2.5 bg-jobflow-sidebar border border-jobflow-border text-jobflow-text text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-jobflow-border transition-all">
-                Edit Tag
-              </button>
-            </div>
+             <div className="flex flex-wrap gap-1.5 mb-5">
+                {['Fullstack', 'Senior', 'TypeScript', 'Lead'].map(tag => (
+                  <span key={tag} className="px-2 py-0.5 bg-jobflow-bg border border-jobflow-border text-[10px] font-semibold text-jobflow-text-dim rounded-md uppercase">
+                    {tag}
+                  </span>
+                ))}
+             </div>
 
-            {/* Subtle background decoration */}
-            <div className="absolute bottom-[-20px] right-[-10px] text-jobflow-accent/5 -rotate-12 group-hover:text-jobflow-accent/10 transition-all">
-              <Plus size={120} />
-            </div>
+             <button className="w-full py-2.5 bg-jobflow-bg border border-jobflow-border text-jobflow-text font-semibold text-[11px] uppercase tracking-[0.1em] rounded-xl hover:border-jobflow-accent transition-all flex items-center justify-center gap-1.5">
+                Preview Variation <ChevronRight size={12} />
+             </button>
           </div>
         )) : (
-          <div className="col-span-full py-20 bg-jobflow-card/50 border-2 border-dashed border-jobflow-border rounded-3xl flex flex-col items-center justify-center text-jobflow-text-dim">
-            <div className="p-6 bg-jobflow-sidebar rounded-full mb-4">
-              <FileText size={48} className="text-jobflow-border" />
-            </div>
-            <p className="font-bold text-lg mb-1 text-jobflow-text">No resumes found</p>
-            <p className="text-xs italic">Upload your first resume to start tailoring.</p>
+          <div className="col-span-full py-20 flex flex-col items-center justify-center text-center opacity-50">
+             <div className="p-6 bg-jobflow-card rounded-2xl border-2 border-dashed border-jobflow-border mb-6">
+                <FileText size={48} className="text-jobflow-text-dim" />
+             </div>
+             <h3 className="text-lg font-bold text-jobflow-text mb-1">No variations found</h3>
+             <p className="text-[11px] text-jobflow-text-dim max-w-sm mb-6 leading-relaxed font-medium">
+               Upload your primary resume and let JobFlow AI help you create optimized variations.
+             </p>
+             <button 
+              onClick={onAdd}
+              className="px-6 py-2.5 bg-jobflow-accent text-white font-semibold text-[11px] uppercase tracking-[0.15em] rounded-xl shadow-lg shadow-jobflow-accent/20 hover:scale-105 active:scale-95 transition-all"
+             >
+                Start with AI Tayloring
+             </button>
           </div>
         )}
       </div>

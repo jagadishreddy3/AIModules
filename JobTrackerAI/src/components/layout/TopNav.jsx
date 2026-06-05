@@ -1,73 +1,57 @@
 import React from 'react';
-import { Search, Bell, User, Moon, Sun, ChevronDown } from 'lucide-react';
+import { Bell, Moon, Sun, User, PanelLeft } from 'lucide-react';
 import { VIEWS } from '../../constants/columns';
 
-const TopNav = ({ currentView, onViewChange, theme, onThemeToggle }) => {
-  const categories = [
-    { id: VIEWS.DASHBOARD, label: 'Dashboard' },
-    { id: VIEWS.APPLICATIONS, label: 'Applications' },
-    { id: VIEWS.ANALYTICS, label: 'Analytics' },
+const TopNav = ({ currentView, onViewChange, theme, onThemeToggle, onToggleSidebar }) => {
+  const tabs = [
+    { id: VIEWS.DASHBOARD, label: 'Overview' },
+    { id: VIEWS.APPLICATIONS, label: 'Pipeline' },
     { id: VIEWS.RESUMES, label: 'Resumes' },
+    { id: VIEWS.ANALYTICS, label: 'Analytics' },
     { id: VIEWS.INTERVIEWS, label: 'Interviews' },
   ];
 
   return (
-    <header className="h-20 bg-jobflow-bg border-b border-jobflow-border flex items-center justify-between px-8 z-40">
-      <div className="flex items-center gap-12">
-        <h1 className="text-xl font-black tracking-tight text-jobflow-text flex items-center gap-2">
-          <span>JobFlow</span>
-          <span className="text-jobflow-accent">AI</span>
-        </h1>
-
-        <nav className="flex items-center gap-2 bg-jobflow-card/50 p-1 rounded-xl border border-jobflow-border backdrop-blur-sm">
-          {categories.map((cat) => (
+    <header className="h-14 bg-jobflow-bg border-b border-jobflow-border flex items-center justify-between px-4 z-40 shrink-0">
+      <div className="flex items-center gap-3 min-w-0">
+        <button onClick={onToggleSidebar} className="p-1.5 text-jobflow-text-dim hover:text-jobflow-accent rounded-lg transition-all shrink-0" title="Toggle sidebar">
+          <PanelLeft size={16} />
+        </button>
+        <h1 className="text-base font-bold text-jobflow-text tracking-tight uppercase shrink-0">JobFlow <span className="text-jobflow-accent italic font-bold">AI</span></h1>
+        
+        <nav className="flex items-center gap-1 h-14">
+          {tabs.map((tab) => (
             <button
-              key={cat.id}
-              onClick={() => onViewChange(cat.id)}
-              className={`px-4 py-2 text-sm font-bold rounded-lg transition-all ${
-                currentView === cat.id 
-                  ? 'bg-jobflow-accent text-white shadow-md' 
-                  : 'text-jobflow-text-dim hover:text-jobflow-text hover:bg-jobflow-card'
+              key={tab.id}
+              onClick={() => onViewChange(tab.id)}
+              className={`h-full px-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] transition-all relative group ${
+                currentView === tab.id ? 'text-jobflow-accent' : 'text-jobflow-text-dim hover:text-jobflow-text'
               }`}
             >
-              {cat.label}
+              {tab.label}
+              {currentView === tab.id && (
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-jobflow-accent"></div>
+              )}
             </button>
           ))}
         </nav>
       </div>
 
-      <div className="flex items-center gap-6">
-        <div className="hidden lg:flex items-center gap-3 bg-jobflow-card px-4 py-2 rounded-xl border border-jobflow-border group focus-within:border-jobflow-accent transition-all min-w-[300px]">
-          <Search size={18} className="text-jobflow-text-dim group-focus-within:text-jobflow-accent" />
-          <input 
-            type="text" 
-            placeholder="Search jobs, resumes..." 
-            className="bg-transparent border-none outline-none text-sm w-full text-jobflow-text placeholder:text-jobflow-text-dim"
-          />
-        </div>
+      <div className="flex items-center gap-2 shrink-0">
+        <button onClick={onThemeToggle} className="p-2 text-jobflow-text-dim hover:text-jobflow-accent bg-jobflow-card border border-jobflow-border rounded-lg transition-all">
+          {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+        </button>
 
-        <div className="flex items-center gap-3">
-          <button onClick={onThemeToggle} className="p-2.5 bg-jobflow-card rounded-xl border border-jobflow-border text-jobflow-text-dim hover:text-jobflow-accent transition-all relative">
-            {theme === 'dark' ? <Sun size={20} className="text-amber-400" /> : <Moon size={20} />}
-          </button>
-          <button className="p-2.5 bg-jobflow-card rounded-xl border border-jobflow-border text-jobflow-text-dim hover:text-jobflow-accent transition-all relative">
-            <Bell size={20} />
-            <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-jobflow-card"></span>
-          </button>
-        </div>
+        <button className="p-2 text-jobflow-text-dim hover:text-jobflow-accent bg-jobflow-card border border-jobflow-border rounded-lg transition-all relative">
+          <Bell size={15} />
+          <div className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-rose-500 rounded-full border-2 border-jobflow-card"></div>
+        </button>
 
-        <div className="h-10 w-px bg-jobflow-border mx-2"></div>
-
-        <div className="flex items-center gap-3 cursor-pointer group">
-          <div className="w-10 h-10 bg-jobflow-accent/20 rounded-xl flex items-center justify-center border border-jobflow-accent/30 text-jobflow-accent font-bold">
-            RK
+        <div className="flex items-center gap-1.5 pl-3 border-l border-jobflow-border/50">
+          <div className="w-7 h-7 bg-jobflow-accent/10 rounded-lg border border-jobflow-accent/20 flex items-center justify-center text-jobflow-accent">
+            <User size={14} />
           </div>
-          <div className="hidden sm:block">
-            <p className="text-xs font-bold text-jobflow-text">Rohit Kumar</p>
-            <p className="text-[10px] text-jobflow-text-dim flex items-center gap-1 group-hover:text-jobflow-accent transition-all font-bold uppercase tracking-widest">
-              Standard Plan <ChevronDown size={10} />
-            </p>
-          </div>
+          <span className="text-[11px] font-semibold text-jobflow-text">Jagadishwar Reddy</span>
         </div>
       </div>
     </header>

@@ -1,43 +1,44 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useJobs } from './hooks/useJobs';
-import Toolbar from './components/Toolbar';
-import Sidebar from './components/Sidebar';
-import KanbanBoard from './components/KanbanBoard';
+import { useResumes } from './hooks/useResumes';
+import RailNav from './components/layout/RailNav';
+import TopNav from './components/layout/TopNav';
+import Sidebar from './components/layout/Sidebar';
+import DashboardView from './views/DashboardView';
+import AnalyticsView from './views/AnalyticsView';
+import ResumesView from './views/ResumesView';
+import InterviewsView from './views/InterviewsView';
+import KanbanBoard from './components/kanban/KanbanBoard';
 import JobFormModal from './components/JobFormModal';
 import DeleteConfirm from './components/DeleteConfirm';
-import { Loader2 } from 'lucide-react';
+import SettingsModal from './components/SettingsModal';
+import ChatPanel from './components/ChatPanel';
+import { VIEWS } from './constants/columns';
 
-function App() {
-  const {
-    jobs,
-    loading,
-    addJob,
-    updateJob,
-    deleteJob,
-    moveJob,
-    exportJSON,
-    importJSON,
-  } = useJobs();
-
+const App = () => {
+  const { jobs, loading, addJob, updateJob, deleteJob, moveJob } = useJobs();
+  const { resumes } = useResumes();
+  
+  const [currentView, setCurrentView] = useState(VIEWS.DASHBOARD);
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingJob, setEditingJob] = useState(null);
-  const [deleteId, setDeleteId] = useState(null);
-  const [searchValue, setSearchValue] = useState('');
+  const [deletingId, setDeletingId] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
-  const filteredJobs = useMemo(() => {
-    if (!searchValue) return jobs;
-    const lowerSearch = searchValue.toLowerCase();
-    return jobs.filter(
-      (j) =>
-        j.company.toLowerCase().includes(lowerSearch) ||
-        j.role.toLowerCase().includes(lowerSearch)
-    );
-  }, [jobs, searchValue]);
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
-  const existingResumes = useMemo(() => {
-    const resumes = jobs.map((j) => j.resume).filter(Boolean);
-    return [...new Set(resumes)];
-  }, [jobs]);
+  const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
 
   const handleAddClick = () => {
     setEditingJob(null);
@@ -49,87 +50,124 @@ function App() {
     setIsFormOpen(true);
   };
 
-  const handleDeleteClick = (id) => {
-    setDeleteId(id);
-  };
-
-  const handleSaveJob = (formData) => {
+  const handleFormSubmit = async (jobData) => {
     if (editingJob) {
-      updateJob(editingJob.id, formData);
+      await updateJob(editingJob.id, jobData);
     } else {
-      addJob(formData);
+      await addJob(jobData);
     }
+    setIsFormOpen(false);
   };
 
-  const confirmDelete = () => {
-    if (deleteId) {
-      deleteJob(deleteId);
-      setDeleteId(null);
+  const renderView = () => {
+    switch (currentView) {
+      case VIEWS.DASHBOARD:
+        return <DashboardView jobs={jobs} />;
+      case VIEWS.APPLICATIONS:
+        return (
+          <div className="flex flex-col h-full overflow-hidden">
+            <div className="px-6 py-4 flex justify-between items-center bg-jobflow-bg/80 backdrop-blur-sm sticky top-0 z-10 border-b border-jobflow-border/50">
+               <div>
+                  <h2 className="text-2xl font-black text-jobflow-text tracking-tight">Application Board</h2>
+                  <div className="flex items-center gap-4 mt-2">
+                     <span className="text-xs font-black text-jobflow-text-dim uppercase tracking-[0.2em] border border-jobflow-border px-2 py-1 rounded-md cursor-pointer hover:border-jobflow-accent transition-all flex items-center gap-1">
+                        ⇅ Sort by Date
+                     </span>
+                     <label className="flex items-center gap-2 cursor-pointer group">
+                        <div className="w-8 h-4 bg-jobflow-card border border-jobflow-border rounded-full relative group-hover:border-jobflow-accent transition-all">
+                           <div className="absolute left-1 top-1 w-2 h-2 bg-jobflow-text-dim rounded-full transition-all"></div>
+                        </div>
+                        <span className="text-xs font-black text-jobflow-text-dim uppercase tracking-widest">Urgent Only</span>
+                     </label>
+                  </div>
+               </div>
+               <div className="flex items-center gap-3">
+                  <div className="flex bg-jobflow-card border border-jobflow-border p-1 rounded-xl">
+                     <button className="px-3 py-1.5 text-xs font-black uppercase text-white bg-jobflow-accent rounded-lg shadow-sm">Kanban</button>
+                     <button className="px-3 py-1.5 text-xs font-black uppercase text-jobflow-text-dim hover:text-jobflow-text transition-all">Table</button>
+                     <button className="px-3 py-1.5 text-xs font-black uppercase text-jobflow-text-dim hover:text-jobflow-text transition-all">Stats</button>
+                  </div>
+                  <button 
+                    onClick={handleAddClick}
+                    className="bg-jobflow-accent hover:bg-jobflow-accent/80 text-white px-5 py-2.5 rounded-xl font-black text-sm transition-all shadow-lg shadow-jobflow-accent/20 active:scale-95"
+                  >
+                    + Add Job
+                  </button>
+               </div>
+            </div>
+            <KanbanBoard 
+              jobs={jobs} 
+              onMove={moveJob} 
+              onEdit={handleEditClick} 
+              onDelete={setDeletingId} 
+            />
+          </div>
+        );
+      case VIEWS.ANALYTICS:
+        return <AnalyticsView jobs={jobs} />;
+      case VIEWS.RESUMES:
+        return <ResumesView resumes={resumes} onAdd={() => alert('Add Resume feature coming soon!')} />;
+      case VIEWS.INTERVIEWS:
+        return <InterviewsView jobs={jobs} />;
+      default:
+        return <DashboardView jobs={jobs} />;
     }
   };
 
   if (loading) {
     return (
-      <div className="h-full w-full flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950">
-        <Loader2 className="animate-spin text-blue-600 mb-4" size={48} />
-        <p className="text-slate-500 font-medium animate-pulse">Initializing your Job Tracker...</p>
+      <div className="h-screen w-screen bg-jobflow-bg flex items-center justify-center">
+         <div className="flex flex-col items-center gap-4">
+            <div className="w-12 h-12 border-4 border-jobflow-accent border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-jobflow-text-dim font-black text-xs uppercase tracking-[0.3em] animate-pulse">Initializing JobFlow AI...</p>
+         </div>
       </div>
     );
   }
 
   return (
-    <div className="h-full flex flex-col bg-slate-50 dark:bg-slate-950 transition-colors duration-300 overflow-hidden">
-      <Toolbar
-        onAdd={handleAddClick}
-        onExport={exportJSON}
-        onImport={importJSON}
-        searchValue={searchValue}
-        onSearchChange={setSearchValue}
-      />
-
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left Side Bar - Analytics */}
-        <Sidebar jobs={jobs} />
-
-        {/* Main Content - Kanban Board */}
-        <main className="flex-1 overflow-hidden relative">
-          <KanbanBoard
-            jobs={filteredJobs}
-            onMove={moveJob}
-            onEdit={handleEditClick}
-            onDelete={handleDeleteClick}
-          />
+    <div className="h-screen w-screen flex bg-jobflow-bg text-jobflow-text overflow-hidden">
+      <RailNav currentView={currentView} onViewChange={setCurrentView} onOpenSettings={() => setSettingsOpen(true)} onOpenChat={() => setChatOpen(true)} />
+      
+      <div className="flex flex-col flex-1 min-w-0">
+        <TopNav 
+          currentView={currentView} 
+          onViewChange={setCurrentView} 
+          theme={theme} 
+          onThemeToggle={toggleTheme}
+          onToggleSidebar={() => setSidebarOpen(prev => !prev)}
+        />
+        
+        <main className="flex flex-1 min-h-0 overflow-hidden">
+          {sidebarOpen && <Sidebar jobs={jobs} currentView={currentView} />}
+          <div className="flex-1 min-w-0 h-full overflow-hidden bg-jobflow-bg/30">
+            {renderView()}
+          </div>
         </main>
       </div>
 
       <JobFormModal
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
-        onSave={handleSaveJob}
+        onSubmit={handleFormSubmit}
         job={editingJob}
-        existingResumes={existingResumes}
       />
 
       <DeleteConfirm
-        isOpen={!!deleteId}
-        onClose={() => setDeleteId(null)}
-        onConfirm={confirmDelete}
-        jobTitle={jobs.find((j) => j.id === deleteId)?.company || 'this job'}
+        isOpen={!!deletingId}
+        onClose={() => setDeletingId(null)}
+        onConfirm={async () => {
+          await deleteJob(deletingId);
+          setDeletingId(null);
+        }}
+        jobTitle={jobs.find((j) => j.id === deletingId)?.company || 'this job'}
       />
 
-      {/* Footer / Status bar */}
-      <footer className="h-8 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center px-8 justify-between z-50 shrink-0">
-        <div className="flex items-center gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-          <span>Total Jobs: {jobs.length}</span>
-          <span className="w-1 h-1 bg-slate-300 dark:bg-slate-700 rounded-full"></span>
-          <span>Filtered: {filteredJobs.length}</span>
-        </div>
-        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-          Local Storage Persistent via IndexedDB
-        </div>
-      </footer>
+      <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+
+      <ChatPanel isOpen={chatOpen} onClose={() => setChatOpen(false)} />
     </div>
   );
-}
+};
 
 export default App;
